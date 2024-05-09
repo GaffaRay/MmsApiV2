@@ -11,7 +11,7 @@
     <Version>1.0.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Description>MmsApiV2 is a framework to handle the MMS API v2 from Egym.</Description>
+    <Description>MmsApiV2 provides an easy to use interface to handle the MMS API v2 from Egym.</Description>
   </PropertyGroup>
 
   <ItemGroup>
