@@ -5,7 +5,7 @@
         /// <summary>
         /// The EGYM account ID for the gym member.
         /// </summary>
-        public string? AccountId { get; }
+        public string? AccountId { get; set;  }
 
         /// <summary>
         /// The member email address. It should be unique within the gym chain.

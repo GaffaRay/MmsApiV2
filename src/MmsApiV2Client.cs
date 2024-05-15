@@ -20,13 +20,13 @@ namespace MmsApiV2;
 /// </summary>
 public class MmsApiV2Client : IMmsApiV2Client, IDisposable
 {
-    private const string jsonMediaType = "application/json";
+    private const string JsonMediaType = "application/json";
 
     private const string AccountApiRoot = "api/v2/accounts";
     private const string ProductApiRoot = "api/v2/products";
     private const string TaskApiRoot = "api/v2/tasks";
     private const string WebhookApiRoot = "api/v2/webhooks";
-    private const string MigarteApiRoot = "api/v2/migrate";
+    private const string MigrateApiRoot = "api/v2/migrate";
 
     /// <summary>
     /// The options for deserializing JSON.
@@ -55,28 +55,26 @@ public class MmsApiV2Client : IMmsApiV2Client, IDisposable
     private bool isDisposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MmsApiV2Client"/> class with the specified API key.
-    /// </summary>
-    /// <param name="apiKey">The API key.</param>
-    public MmsApiV2Client(string apiKey) : this(apiKey, ApiBaseUrls.Prod) { }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="MmsApiV2Client"/> class with the specified API key and base URL.
     /// </summary>
     /// <param name="apiKey">The API key.</param>
     /// <param name="apiBaseUrl">The base URL for the API.</param>
-    public MmsApiV2Client(string apiKey, string apiBaseUrl) : this(new HttpClient
+    public MmsApiV2Client(string apiKey, string apiBaseUrl = ApiBaseUrls.Prod) : this(new HttpClient
     {
         BaseAddress = new Uri(apiBaseUrl),
         DefaultRequestHeaders =
         {
-            { "Accept", jsonMediaType },
+            { "Accept", JsonMediaType },
             { "x-api-key", apiKey}
         }
     })
     { }
 
-    internal MmsApiV2Client(HttpClient httpClient)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MmsApiV2Client"/> class using the provided HttpClient.
+    /// </summary>
+    /// <param name="httpClient">The HttpClient used for making API requests.</param>
+    public MmsApiV2Client(HttpClient httpClient)
     {
         this.httpClient = httpClient;
     }
@@ -113,11 +111,11 @@ public class MmsApiV2Client : IMmsApiV2Client, IDisposable
         {
             var json = JsonSerializer.Serialize(obj, serializeOptions);
 
-            content = new StringContent(json, Encoding.UTF8, jsonMediaType);
+            content = new StringContent(json, Encoding.UTF8, JsonMediaType);
         }
         else
         {
-            content = new StringContent(string.Empty, Encoding.UTF8, jsonMediaType);
+            content = new StringContent(string.Empty, Encoding.UTF8, JsonMediaType);
         }
 
         using var httpResponseMessage = await httpClient
@@ -156,7 +154,7 @@ public class MmsApiV2Client : IMmsApiV2Client, IDisposable
         var json = JsonSerializer.Serialize(obj, serializeOptions);
 
         using var httpResponseMessage = await httpClient
-            .PostAsync(requestUri, new StringContent(json, Encoding.UTF8, jsonMediaType), cancellationToken)
+            .PostAsync(requestUri, new StringContent(json, Encoding.UTF8, JsonMediaType), cancellationToken)
             .ConfigureAwait(false);
 
         return await ProcessHttpResponse<T>(httpResponseMessage, cancellationToken).ConfigureAwait(false);
@@ -174,7 +172,7 @@ public class MmsApiV2Client : IMmsApiV2Client, IDisposable
         var json = JsonSerializer.Serialize(obj, serializeOptions);
 
         using var httpResponseMessage = await httpClient
-            .PutAsync(requestUri, new StringContent(json, Encoding.UTF8, jsonMediaType), cancellationToken)
+            .PutAsync(requestUri, new StringContent(json, Encoding.UTF8, JsonMediaType), cancellationToken)
             .ConfigureAwait(false);
 
         await ProcessHttpResponse(httpResponseMessage, cancellationToken);
@@ -193,7 +191,7 @@ public class MmsApiV2Client : IMmsApiV2Client, IDisposable
         var json = JsonSerializer.Serialize(obj, serializeOptions);
 
         using var httpResponseMessage = await httpClient
-            .PutAsync(requestUri, new StringContent(json, Encoding.UTF8, jsonMediaType), cancellationToken)
+            .PutAsync(requestUri, new StringContent(json, Encoding.UTF8, JsonMediaType), cancellationToken)
             .ConfigureAwait(false);
 
         return await ProcessHttpResponse<T>(httpResponseMessage, cancellationToken).ConfigureAwait(false);
@@ -282,28 +280,6 @@ public class MmsApiV2Client : IMmsApiV2Client, IDisposable
         {
             throw new MmsApiV2Exception((int)httpResponseMessage.StatusCode, message, e);
         }
-
-        //if (httpResponseMessage.IsSuccessStatusCode)
-        //{
-        //    return;
-        //}
-
-        //await using var responseContent = await httpResponseMessage.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-
-        //var message = httpResponseMessage.Content.Headers.ContentLength > 0
-        //    ? await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)
-        //    : httpResponseMessage.ReasonPhrase;
-
-        //try
-        //{
-        //    var error = await JsonSerializer.DeserializeAsync<ErrorDTO>(responseContent, deserializeOptions, cancellationToken).ConfigureAwait(false);
-
-        //    throw new MmsApiV2Exception((int)httpResponseMessage.StatusCode, error, message);
-        //}
-        //catch (Exception e)
-        //{
-        //    throw new MmsApiV2Exception((int)httpResponseMessage.StatusCode, message, e);
-        //}
     }
 
     #endregion Helpers
@@ -346,7 +322,7 @@ public class MmsApiV2Client : IMmsApiV2Client, IDisposable
     public async Task<MemberAccountDTO?> RetrieveAnAccountByEmail(string email, CancellationToken cancellationToken) => await Get<MemberAccountDTO>($"{AccountApiRoot}/email/{email}", cancellationToken).ConfigureAwait(false);
 
     /// <inheritdoc />
-    public async Task<MemberAccountDTO?> MigrateAnAccount(long legacyUserId, CancellationToken cancellationToken) => await Post<MemberAccountDTO>($"{MigarteApiRoot}?legacyUserId={legacyUserId}", cancellationToken).ConfigureAwait(false);
+    public async Task<MemberAccountDTO?> MigrateAnAccount(long legacyUserId, CancellationToken cancellationToken) => await Post<MemberAccountDTO>($"{MigrateApiRoot}?legacyUserId={legacyUserId}", cancellationToken).ConfigureAwait(false);
     #endregion MemberAccounts
 
     #region Rfids
