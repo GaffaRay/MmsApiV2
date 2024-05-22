@@ -301,7 +301,7 @@ public class MmsApiV2Client : IMmsApiV2Client, IDisposable
     public async Task UploadAccountImage(string accountId, byte[] fileBytes, string fileName, CancellationToken cancellationToken) => await UploadAccountImage(accountId, new MultipartFormDataContent { { new ByteArrayContent(fileBytes), "file", fileName } }, cancellationToken).ConfigureAwait(false);
 
     /// <inheritdoc />
-    public async Task UploadAccountImage(string accountId, MultipartFormDataContent multipartFormDataContent, CancellationToken cancellationToken) => await Put($"{AccountApiRoot}/{accountId}/images", multipartFormDataContent, cancellationToken).ConfigureAwait(false);
+    public async Task UploadAccountImage(string accountId, MultipartFormDataContent multipartFormDataContent, CancellationToken cancellationToken) => await httpClient.PutAsync($"{AccountApiRoot}/{accountId}/images", multipartFormDataContent, cancellationToken).ConfigureAwait(false);
 
     /// <inheritdoc />
     public async Task DeleteAccountImage(string accountId, CancellationToken cancellationToken) => await Delete($"{AccountApiRoot}/{accountId}/images", cancellationToken).ConfigureAwait(false);
