@@ -8,17 +8,17 @@ public class ProductDTO
     /// <summary>
     /// The ID of the product.
     /// </summary>
-    public string ProductId { get; }
+    public string ProductId { get; set; }
 
     /// <summary>
     /// Product title.
     /// </summary>
-    public string Title { get; }
+    public string Title { get; set; }
 
     /// <summary>
     /// Product description.
     /// </summary>
-    public string Description { get; }
+    public string Description { get; set; }
 
     /// <summary>
     /// The scope of the bookable package.<br/>
